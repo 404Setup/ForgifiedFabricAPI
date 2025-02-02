@@ -224,11 +224,11 @@ publishMods {
     dryRun.set(!providers.environmentVariable("CI").isPresent)
     displayName.set("[$versionMc] Forgified Fabric API ${project.version}")
 
-    github {
-        accessToken.set(providers.environmentVariable("GITHUB_TOKEN"))
-        repository.set(githubRepository)
-        commitish.set(publishBranch)
-    }
+//    github {
+//        accessToken.set(providers.environmentVariable("GITHUB_TOKEN"))
+//        repository.set(githubRepository)
+//        commitish.set(publishBranch)
+//    }
 }
 
 dependencies {
