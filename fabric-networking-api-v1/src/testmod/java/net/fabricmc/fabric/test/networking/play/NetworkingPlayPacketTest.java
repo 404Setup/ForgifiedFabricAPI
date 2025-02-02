@@ -25,15 +25,11 @@ import java.util.List;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
-import net.fabricmc.api.EnvType;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
-import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.PacketSendListener;
@@ -45,6 +41,11 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.network.protocol.game.ClientboundBundlePacket;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
+import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 public final class NetworkingPlayPacketTest implements ModInitializer {
 	private static boolean spamUnknownPackets = false;
@@ -97,23 +98,23 @@ public final class NetworkingPlayPacketTest implements ModInitializer {
 
 		PayloadTypeRegistry.playS2C().register(OverlayPacket.ID, OverlayPacket.CODEC);
 
-		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.SERVER) {
+		if (FMLLoader.getDist().isDedicatedServer()) {
 			PayloadTypeRegistry.playS2C().register(UnknownPayload.ID, UnknownPayload.CODEC);
 		}
 
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
-			NetworkingPlayPacketTest.registerCommand(dispatcher);
+		NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, RegisterCommandsEvent.class, event -> {
+			NetworkingPlayPacketTest.registerCommand(event.getDispatcher());
 		});
 
 		ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> sender.sendPacket(new OverlayPacket(Component.literal("Fabric API"))));
 
-		ServerTickEvents.START_SERVER_TICK.register(server -> {
+		NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, ServerTickEvent.Pre.class, event -> {
 			if (!spamUnknownPackets) {
 				return;
 			}
 
 			// Send many unknown packets, used to debug https://github.com/FabricMC/fabric/issues/3505
-			for (ServerPlayer player : server.getPlayerList().getPlayers()) {
+			for (ServerPlayer player : event.getServer().getPlayerList().getPlayers()) {
 				for (int i = 0; i < 50; i++) {
 					sendToUnknownChannel(player);
 				}

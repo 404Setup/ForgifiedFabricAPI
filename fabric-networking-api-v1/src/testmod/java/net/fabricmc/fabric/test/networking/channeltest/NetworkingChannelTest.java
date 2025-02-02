@@ -33,7 +33,6 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.mojang.brigadier.tree.ArgumentCommandNode;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.impl.networking.PayloadTypeRegistryImpl;
 import net.minecraft.commands.CommandSourceStack;
@@ -44,11 +43,14 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 
 public final class NetworkingChannelTest implements ModInitializer {
 	@Override
 	public void onInitialize() {
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+		NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, RegisterCommandsEvent.class, event -> {
 			final LiteralCommandNode<CommandSourceStack> channelTestCommand = literal("network_channel_test").build();
 
 			// Info
@@ -85,7 +87,7 @@ public final class NetworkingChannelTest implements ModInitializer {
 				channelTestCommand.addChild(unregister);
 			}
 
-			dispatcher.getRoot().addChild(channelTestCommand);
+			event.getDispatcher().getRoot().addChild(channelTestCommand);
 		});
 	}
 

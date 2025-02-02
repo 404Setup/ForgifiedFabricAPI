@@ -20,17 +20,19 @@ import java.util.Objects;
 
 import com.mojang.brigadier.Command;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
-import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
 import net.fabricmc.fabric.test.networking.play.NetworkingPlayPacketTest;
+import net.minecraft.commands.Commands;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.common.NeoForge;
 
 public final class NetworkingPlayPacketClientTest implements ClientModInitializer {
 	@Override
@@ -46,13 +48,14 @@ public final class NetworkingPlayPacketClientTest implements ClientModInitialize
 			context.client().gui.setOverlayMessage(payload.message(), true);
 		}));
 
-		ClientCommandRegistrationCallback.EVENT.register((dispatcher, dedicated) -> dispatcher.register(
-				ClientCommandManager.literal("clientnetworktestcommand")
-						.then(ClientCommandManager.literal("unknown").executes(context -> {
-							ClientPlayNetworking.send(new UnknownPayload("Hello"));
-							return Command.SINGLE_SUCCESS;
-						}
-		))));
+		NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, RegisterClientCommandsEvent.class, event -> {
+			event.getDispatcher().register(Commands.literal("clientnetworktestcommand")
+					.then(Commands.literal("unknown").executes(context -> {
+						ClientPlayNetworking.send(new UnknownPayload("Hello"));
+						return Command.SINGLE_SUCCESS;
+					}))
+			);
+		});
 	}
 
 	private record UnknownPayload(String data) implements CustomPacketPayload {

@@ -18,10 +18,12 @@ package net.fabricmc.fabric.test.networking.configuration;
 
 import java.util.function.Consumer;
 
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
@@ -66,7 +68,9 @@ public class NetworkingConfigurationTest implements ModInitializer {
 		});
 
 		// Enable the vanilla debugconfig command
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> DebugConfigCommand.register(dispatcher));
+		NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, RegisterCommandsEvent.class, event -> {
+			DebugConfigCommand.register(event.getDispatcher());
+		});
 	}
 
 	public record TestConfigurationTask(String data) implements ConfigurationTask {

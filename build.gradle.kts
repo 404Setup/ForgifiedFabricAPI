@@ -17,18 +17,12 @@ val versionMc: String by project
 val versionForge: String by project
 val versionForgifiedFabricLoader: String by project
 
-val curseForgeId: String by project
-val modrinthId: String by project
 val githubRepository: String by project
 val publishBranch: String by project
 
 val META_PROJECTS: List<String> = listOf(
-    "deprecated",
     "fabric-api-bom",
     "fabric-api-catalog"
-)
-val DEV_ONLY_MODULES: List<String> = listOf(
-    "fabric-gametest-api-v1"
 )
 
 ext["getSubprojectVersion"] = object : groovy.lang.Closure<Unit>(this) {
@@ -58,17 +52,30 @@ allprojects {
     apply(plugin = "maven-publish")
 
     publishing {
+//        repositories {
+//            val env = System.getenv()
+//            if (env["MAVEN_URL"] != null) {
+//                repositories.maven {
+//                    url = uri(env["MAVEN_URL"] as String)
+//                    if (env["MAVEN_USERNAME"] != null) {
+//                        credentials {
+//                            username = env["MAVEN_USERNAME"]
+//                            password = env["MAVEN_PASSWORD"]
+//                        }
+//                    }
+//                }
+//            }
+//        }
         repositories {
-            val env = System.getenv()
-            if (env["MAVEN_URL"] != null) {
-                repositories.maven {
-                    url = uri(env["MAVEN_URL"] as String)
-                    if (env["MAVEN_USERNAME"] != null) {
-                        credentials {
-                            username = env["MAVEN_USERNAME"]
-                            password = env["MAVEN_PASSWORD"]
-                        }
-                    }
+            maven {
+                name = "cloudsmith"
+                url = uri("https://maven.cloudsmith.io/thinkingstudio/forgifiedfabricapi/")
+                val releasesRepoUrl = uri("https://maven.cloudsmith.io/thinkingstudio/forgifiedfabricapi/")
+                val snapshotsRepoUrl = uri("https://maven.cloudsmith.io/thinkingstudio/forgifiedfabricapi/")
+                url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+                credentials {
+                    username = "tex-true"
+                    password = System.getenv("CLOUDSMITH_MAVEN_TOKEN")
                 }
             }
         }
@@ -126,9 +133,7 @@ allprojects {
 }
 
 dependencies {
-    // Include Forgified Fabric Loader
-    include("org.sinytra:forgified-fabric-loader:$versionForgifiedFabricLoader:full")
-    api("org.sinytra:forgified-fabric-loader:$versionForgifiedFabricLoader")
+
 }
 
 tasks {
@@ -223,16 +228,6 @@ publishMods {
         accessToken.set(providers.environmentVariable("GITHUB_TOKEN"))
         repository.set(githubRepository)
         commitish.set(publishBranch)
-    }
-    curseforge {
-        accessToken.set(providers.environmentVariable("CURSEFORGE_TOKEN"))
-        projectId.set(curseForgeId)
-        minecraftVersions.add(versionMc)
-    }
-    modrinth {
-        accessToken.set(providers.environmentVariable("MODRINTH_TOKEN"))
-        projectId.set(modrinthId)
-        minecraftVersions.add(versionMc)
     }
 }
 

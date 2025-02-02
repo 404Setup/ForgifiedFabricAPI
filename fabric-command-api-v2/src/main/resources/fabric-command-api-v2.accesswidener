@@ -1,3 +1,0 @@
-accessWidener	v2	named
-transitive-accessible	field	net/minecraft/commands/Commands$CommandSelection	includeDedicated	Z
-transitive-accessible	field	net/minecraft/commands/Commands$CommandSelection	includeIntegrated	Z

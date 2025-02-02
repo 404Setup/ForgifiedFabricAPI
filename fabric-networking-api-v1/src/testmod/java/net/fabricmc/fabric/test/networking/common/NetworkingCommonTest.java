@@ -18,6 +18,8 @@ package net.fabricmc.fabric.test.networking.common;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -25,13 +27,17 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerConfigurationNetworking;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.fabric.test.networking.NetworkingTestmods;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.EntityEvent;
+import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
+import net.neoforged.neoforge.event.server.ServerLifecycleEvent;
 
 public class NetworkingCommonTest implements ModInitializer {
 	private boolean firstLoad = true;
@@ -55,7 +61,7 @@ public class NetworkingCommonTest implements ModInitializer {
 		ServerConfigurationNetworking.registerGlobalReceiver(CommonPayload.ID, (payload, context) -> receivedConfig.add(context.networkHandler().getOwner().getId().toString()));
 
 		// Ensure that the packets were received on the server
-		ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
+		NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, EntityJoinLevelEvent.class, event -> {
 			if (!firstLoad) {
 				// No need to check again if the player changes dimensions
 				return;
@@ -63,11 +69,11 @@ public class NetworkingCommonTest implements ModInitializer {
 
 			firstLoad = false;
 
-			if (entity instanceof ServerPlayer player) {
+			if (event.getEntity() instanceof ServerPlayer player) {
 				final String uuid = player.getStringUUID();
 
 				// Allow a few ticks for the packets to be received
-				executeIn(world.getServer(), 50, () -> {
+				executeIn(Objects.requireNonNull(event.getLevel().getServer()), 50, () -> {
 					if (!receivedPlay.remove(uuid)) {
 						throw new IllegalStateException("Did not receive play response");
 					}

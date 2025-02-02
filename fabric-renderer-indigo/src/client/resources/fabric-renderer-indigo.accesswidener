@@ -1,5 +1,0 @@
-accessWidener	v2	named
-accessible	class	net/minecraft/client/renderer/block/ModelBlockRenderer$AmbientOcclusionFace
-accessible	field	net/minecraft/client/renderer/block/ModelBlockRenderer$AmbientOcclusionFace	brightness	[F
-accessible	field	net/minecraft/client/renderer/block/ModelBlockRenderer$AmbientOcclusionFace	lightmap	[I
-accessible	method	net/minecraft/client/renderer/block/ModelBlockRenderer	calculateShape	(Lnet/minecraft/world/level/BlockAndTintGetter;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/core/BlockPos;[ILnet/minecraft/core/Direction;[FLjava/util/BitSet;)V

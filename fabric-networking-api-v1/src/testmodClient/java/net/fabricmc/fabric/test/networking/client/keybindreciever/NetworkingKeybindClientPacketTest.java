@@ -16,25 +16,38 @@
 
 package net.fabricmc.fabric.test.networking.client.keybindreciever;
 
+import net.minecraft.client.Minecraft;
+import net.neoforged.bus.api.EventPriority;
+import net.neoforged.fml.ModLoadingContext;
+import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.common.NeoForge;
 import org.lwjgl.glfw.GLFW;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.test.networking.keybindreciever.KeybindPayload;
 import net.minecraft.client.KeyMapping;
 
+import java.util.Objects;
+
 // Sends a packet to the server when a keybinding was pressed
 // The server in response will send a chat message to the client.
 public class NetworkingKeybindClientPacketTest implements ClientModInitializer {
-	public static final KeyMapping TEST_BINDING = KeyBindingHelper.registerKeyBinding(new KeyMapping("key.fabric-networking-api-v1-testmod.test", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_BRACKET, "key.category.fabric-networking-api-v1-testmod"));
+	public static final KeyMapping TEST_BINDING = new KeyMapping("key.fabric-networking-api-v1-testmod.test", InputConstants.Type.KEYSYM, GLFW.GLFW_KEY_RIGHT_BRACKET, "key.category.fabric-networking-api-v1-testmod");
 
 	@Override
 	public void onInitializeClient() {
-		ClientTickEvents.END_CLIENT_TICK.register(client -> {
+		var modContainer = ModLoadingContext.get().getActiveContainer();
+
+		Objects.requireNonNull(modContainer.getEventBus()).addListener(EventPriority.HIGHEST, RegisterKeyMappingsEvent.class, event -> {
+			event.register(TEST_BINDING);
+		});
+
+		NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, ClientTickEvent.Post.class, event -> {
 			// Player must be in game to send packets, i.e. client.player != null
-			if (client.getConnection() != null) {
+			if (Minecraft.getInstance().getConnection() != null) {
 				if (TEST_BINDING.consumeClick()) {
 					// Send an empty payload, server just needs to be told when packet is sent
 					// Since KeybindPayload is an empty payload, it can be a singleton.
