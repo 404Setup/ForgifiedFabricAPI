@@ -1,6 +1,6 @@
 import me.modmuss50.mpp.ReleaseType
-import net.fabricmc.loom.build.nesting.IncludedJarFactory
-import net.fabricmc.loom.build.nesting.JarNester
+//import net.fabricmc.loom.build.nesting.IncludedJarFactory
+//import net.fabricmc.loom.build.nesting.JarNester
 import net.fabricmc.loom.util.Constants
 import org.apache.commons.codec.digest.DigestUtils
 import org.eclipse.jgit.api.Git
@@ -17,6 +17,8 @@ val versionMc: String by project
 val versionForge: String by project
 val versionForgifiedFabricLoader: String by project
 
+val curseForgeId: String by project
+val modrinthId: String by project
 val githubRepository: String by project
 val publishBranch: String by project
 
@@ -125,18 +127,11 @@ dependencies {
 tasks {
     named<Jar>("jar") {
         doLast {
-            val factory = IncludedJarFactory(project)
-            val config = configurations.getByName(Constants.Configurations.INCLUDE)
-            val nestedJars = factory.getNestedJars(config)
-            val forgeNestedJars = factory.getForgeNestedJars(config)
+//            val factory = IncludedJarFactory(project)
+//            val config = configurations.getByName(Constants.Configurations.INCLUDE)
+//            val nestedJars = factory.getNestedJars(config)
+//            val forgeNestedJars = factory.getForgeNestedJars(config)
 
-            JarNester.nestJars(
-                nestedJars.get().files,
-                forgeNestedJars.get().left.map { it.resolve() },
-                archiveFile.get().asFile,
-                loom.platform.get(),
-                project.logger
-            )
         }
     }
 
@@ -169,7 +164,7 @@ allprojects {
             loom.mods.register(p.name) {
                 sourceSet(p.sourceSets.main.get())
             }
-    
+
             if (p.file("src/testmod").exists() || p.file("src/testmodClient").exists()) {
                 loom.mods.register(p.name + "-testmod") {
                     sourceSet(p.sourceSets.getByName("testmod"))
@@ -215,19 +210,29 @@ publishMods {
 //        repository.set(githubRepository)
 //        commitish.set(publishBranch)
 //    }
+//    curseforge {
+//        accessToken.set(providers.environmentVariable("CURSEFORGE_TOKEN"))
+//        projectId.set(curseForgeId)
+//        minecraftVersions.add(versionMc)
+//    }
+//    modrinth {
+//        accessToken.set(providers.environmentVariable("MODRINTH_TOKEN"))
+//        projectId.set(modrinthId)
+//        minecraftVersions.add(versionMc)
+//    }
 }
 
 dependencies {
-	afterEvaluate {
-		subprojects.forEach { proj ->
-			if (proj.name in META_PROJECTS) {
-				return@forEach
-			}
+    afterEvaluate {
+        subprojects.forEach { proj ->
+            if (proj.name in META_PROJECTS) {
+                return@forEach
+            }
 
-			include(api(project(proj.path, "namedElements"))!!)
-			"testmodImplementation"(proj.sourceSets.getByName("testmod").output)
-		}
-	}
+            include(api(project(proj.path, "namedElements"))!!)
+            "testmodImplementation"(proj.sourceSets.getByName("testmod").output)
+        }
+    }
 }
 
 val git: Git? = runCatching { Git.open(rootDir) }.getOrNull()

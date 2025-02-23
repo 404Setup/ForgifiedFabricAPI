@@ -49,7 +49,7 @@ extensions.getByType<SourceSetContainer>().configureEach {
     }
 }
 
-afterEvaluate { 
+afterEvaluate {
     if (loom.accessWidenerPath.isPresent) {
         tasks.withType<Jar> {
             exclude(loom.accessWidenerPath.get().asFile.name)
@@ -113,7 +113,7 @@ abstract class GenerateForgeModMetadata : DefaultTask() {
         val provides: List<String>?,
         val displayURL: String
     )
-    
+
     data class Mixin(
         val config: String
     )
@@ -182,16 +182,20 @@ abstract class GenerateForgeModMetadata : DefaultTask() {
             val mods = listOf(
                 Mod(
                     modId = normalModid,
-                    version = "\${file.jarVersion}",
-                    displayName = "Forgified " + json.get("name").asString,
+                    version = "\${version}",
+                    displayName = "Forgified " + json.get("name").asString + "(ThinkingStudio)",
                     logoFile = json.get("icon")?.asString,
-                    authors = (listOf("Sinytra") + (json.getAsJsonArray("authors")?.map { it.asString } ?: emptyList())).joinToString(separator = ", "),
-                    description = json.get("description")?.asString,
+                    authors = (listOf("ThinkingStudio, Sinytra") + (json.getAsJsonArray("authors")?.map { it.asString } ?: emptyList())).joinToString(separator = ", "),
+                    description = json.get("description")?.asString +
+                            "\\n\\nThis is based on Sinytra's Forgified Fabric API, " +
+                            "but is updated to work on newer versions of Minecraft. " +
+                            "You can replace this version with the original that can be obtained from here: " +
+                            "https://modrinth.com/mod/forgified-fabric-api",
                     provides = providedMods,
-                    displayURL = "https://github.com/Sinytra/ForgifiedFabricAPI"
+                    displayURL = "https://github.com/ThinkingStudios/ForgifiedFabricAPI"
                 )
             )
-            val mixins = json.getAsJsonArray("mixins")?.map { 
+            val mixins = json.getAsJsonArray("mixins")?.map {
                 if (it.isJsonObject) {
                     Mixin(it.asJsonObject.get("config").asString)
                 } else if (it.isJsonPrimitive) {
@@ -201,9 +205,9 @@ abstract class GenerateForgeModMetadata : DefaultTask() {
                 }
             }
             val properties =
-                if (json.getAsJsonObject("entrypoints")?.has("fabric-gametest") == true) 
-                    mapOf("forgified-fabric-api:game-test-prefix" to originalModid) 
-                else 
+                if (json.getAsJsonObject("entrypoints")?.has("fabric-gametest") == true)
+                    mapOf("forgified-fabric-api:game-test-prefix" to originalModid)
+                else
                     null
 
             val modsToml = ModsToml(
@@ -227,10 +231,10 @@ abstract class GenerateForgeModMetadata : DefaultTask() {
         if (accessWidener.isPresent) {
             val awPath = accessWidener.get().asFile.toPath()
             val atPath = output.resolve("META-INF/accesstransformer.cfg")
-        
+
             val at = AccessTransformSet.create()
             awPath.bufferedReader().use { at.merge(Aw2At.toAccessTransformSet(it)) }
-        
+
             LfWriter(atPath.bufferedWriter()).use {  AccessTransformFormats.FML.write(it, at) }
         }
     }

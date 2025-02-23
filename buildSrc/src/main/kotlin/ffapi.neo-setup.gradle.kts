@@ -37,10 +37,6 @@ dependencies {
     "testmodImplementation"(mainSourceSet.output)
 //    "testmodImplementation"("org.sinytra:forgified-fabric-loader:$versionForgifiedFabricLoader")
 
-//    if (project.name != "fabric-gametest-api-v1") {
-//        "testmodImplementation"(project(":fabric-gametest-api-v1", "namedElements"))
-//    }
-
     "testImplementation"(testmod.output)
     "testImplementation"("org.mockito:mockito-core:5.4.0")
     "testImplementation"("org.junit.jupiter:junit-jupiter-api:5.8.1")
@@ -48,9 +44,9 @@ dependencies {
 }
 
 tasks {
-    afterEvaluate { 
+    afterEvaluate {
         named<Jar>("jar") {
-            manifest { 
+            manifest {
                 attributes(
                     "Implementation-Version" to project.version
                 )
@@ -67,6 +63,9 @@ tasks {
         filesMatching("assets/*/icon.png") {
             exclude()
             rootProject.file("src/main/resources/assets/fabric/icon.png").copyTo(destinationDir.resolve(path))
+        }
+        filesMatching("META-INF/neoforge.mods.toml") {
+            expand(mapOf("version" to version))
         }
     }
 }
