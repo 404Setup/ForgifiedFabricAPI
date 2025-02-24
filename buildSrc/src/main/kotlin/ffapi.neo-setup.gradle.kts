@@ -35,7 +35,7 @@ dependencies {
 //    "implementation"("org.sinytra:forgified-fabric-loader:$versionForgifiedFabricLoader")
 
     "testmodImplementation"(mainSourceSet.output)
-//    "testmodImplementation"("org.sinytra:forgified-fabric-loader:$versionForgifiedFabricLoader")
+    "testmodImplementation"("org.sinytra:forgified-fabric-loader:$versionForgifiedFabricLoader")
 
     "testImplementation"(testmod.output)
     "testImplementation"("org.mockito:mockito-core:5.4.0")

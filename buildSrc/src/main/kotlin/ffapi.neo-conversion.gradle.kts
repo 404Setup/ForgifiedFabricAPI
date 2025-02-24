@@ -215,7 +215,7 @@ abstract class GenerateForgeModMetadata : DefaultTask() {
                 loaderVersion = "[${loaderVersionString.get()},)",
                 license = json.get("license")?.asString ?: "All Rights Reserved",
                 displayTest,
-                issueTrackerURL = "https://github.com/Sinytra/ForgifiedFabricAPI/issues",
+                issueTrackerURL = "https://github.com/ThinkingStudios/ForgifiedFabricAPI/issues",
 
                 mods,
                 dependencies = mapOf(normalModid to allDependencies),
