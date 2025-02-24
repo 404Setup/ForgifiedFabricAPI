@@ -21,7 +21,7 @@ repositories {
     }
 }
 dependencies {
-    implementation "org.sinytra.forgified-fabric-api:forgified-fabric-api:FFAPI_VERSION"
+    modImplementation "org.sinytra.forgified-fabric-api:forgified-fabric-api:FFAPI_VERSION"
 }
 ```
 
