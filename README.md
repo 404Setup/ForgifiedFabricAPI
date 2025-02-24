@@ -4,12 +4,12 @@
 
 Forgified Fabric API little fork. Custom sth.
 
-## 🛠️ Using Forgified Fabric API to develop mods
+## 🛠️ Using Forgified Fabric Lite API to develop mods
 
 To set up a NeoForge development environment, please read the [NeoForge docs](https://docs.neoforged.net/) and follow the instructions there.
 
-The Forgified Fabric API is published under the `org.sinytra.forgified-fabric-api` group. To include the full Forgified
-Fabric API with all modules in the development environment, add the following to your `dependencies` block in the gradle
+The Forgified Fabric API Lite is published under the `org.sinytra.forgified-fabric-api` group. To include the full Forgified
+Fabric API Lite with all modules in the development environment, add the following to your `dependencies` block in the gradle
 buildscript:
 
 ### Groovy DSL
@@ -17,11 +17,11 @@ buildscript:
 ```groovy
 repositories {
     maven {
-        url "https://maven.su5ed.dev/releases"
+        url "https://dl.cloudsmith.io/public/thinkingstudio/forgifiedfabricapi/maven/"
     }
 }
 dependencies {
-    implementation "org.sinytra.forgified-fabric-api:forgified-fabric-api:FABRIC_API_VERSION"
+    implementation "org.sinytra.forgified-fabric-api:forgified-fabric-api:FFAPI_VERSION"
 }
 ```
 
