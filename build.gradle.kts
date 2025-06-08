@@ -16,6 +16,9 @@ val implementationVersion: String by project
 val versionMc: String by project
 val versionForge: String by project
 
+val githubRepository: String by project
+val publishBranch: String by project
+
 val META_PROJECTS: List<String> = listOf(
     "fabric-api-bom",
     "fabric-api-catalog"
@@ -209,11 +212,11 @@ publishMods {
     dryRun.set(!providers.environmentVariable("CI").isPresent)
     displayName.set("[$versionMc] Forgified Fabric API ${project.version}")
 
-//    github {
-//        accessToken.set(providers.environmentVariable("GITHUB_TOKEN"))
-//        repository.set(githubRepository)
-//        commitish.set(publishBranch)
-//    }
+    github {
+        accessToken.set(providers.environmentVariable("GITHUB_TOKEN"))
+        repository.set(githubRepository)
+        commitish.set(publishBranch)
+    }
 //    curseforge {
 //        accessToken.set(providers.environmentVariable("CURSEFORGE_TOKEN"))
 //        projectId.set(curseForgeId)
