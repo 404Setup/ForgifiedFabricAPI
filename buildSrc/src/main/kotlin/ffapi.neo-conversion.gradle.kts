@@ -8,7 +8,7 @@ import net.fabricmc.loom.util.aw2at.Aw2At
 import kotlin.io.path.*
 
 val versionMc: String by rootProject
-val versionForge: String by rootProject
+val versionForgeCompat: String by rootProject
 
 val loom = extensions.getByType<LoomGradleExtensionAPI>()
 
@@ -28,7 +28,7 @@ extensions.getByType<SourceSetContainer>().configureEach {
         sourceRoots.from(resourceRoots)
         outputDir = file("src/generated/$sourceSetName/resources")
         loaderVersionString = "1"
-        forgeVersionString = versionForge
+        forgeVersionString = versionForgeCompat
         minecraftVersionString = versionMc
         accessWidener = loom.accessWidenerPath
     }
