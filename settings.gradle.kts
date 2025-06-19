@@ -34,4 +34,5 @@ include("fabric-api-bom")
 include("fabric-api-catalog")
 
 include("fabric-api-base")
+include("fabric-keybinding-api-v1")
 include("fabric-networking-api-v1")

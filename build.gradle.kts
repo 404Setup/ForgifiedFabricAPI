@@ -53,8 +53,8 @@ allprojects {
     publishing {
         repositories {
             maven {
-                name = "cloudsmith"
-                url = uri("https://maven.cloudsmith.io/thinkingstudio/forgifiedfabricapi/")
+                name = "GithubRepo"
+                url = uri("https://maven.pkg.github.com/404Setup/")
                 val releasesRepoUrl = uri("https://maven.cloudsmith.io/thinkingstudio/forgifiedfabricapi/")
                 val snapshotsRepoUrl = uri("https://maven.cloudsmith.io/thinkingstudio/forgifiedfabricapi/")
                 url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
@@ -87,7 +87,7 @@ allprojects {
             url = uri("https://maven.fabricmc.net")
         }
         maven {
-            name = "Mojank"
+            name = "Mojang"
             url = uri("https://libraries.minecraft.net/")
         }
         maven {

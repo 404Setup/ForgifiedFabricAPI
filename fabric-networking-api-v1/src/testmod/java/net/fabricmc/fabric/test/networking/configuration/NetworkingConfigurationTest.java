@@ -69,7 +69,7 @@ public class NetworkingConfigurationTest implements ModInitializer {
 
 		// Enable the vanilla debugconfig command
 		NeoForge.EVENT_BUS.addListener(EventPriority.HIGHEST, RegisterCommandsEvent.class, event -> {
-			DebugConfigCommand.register(event.getDispatcher());
+			DebugConfigCommand.register(event.getDispatcher(), event.getBuildContext());
 		});
 	}
 

@@ -183,16 +183,16 @@ abstract class GenerateForgeModMetadata : DefaultTask() {
                 Mod(
                     modId = normalModid,
                     version = "\${version}",
-                    displayName = "Forgified " + json.get("name").asString + "(ThinkingStudio)",
+                    displayName = "Forgified " + json.get("name").asString + " UX",
                     logoFile = json.get("icon")?.asString,
-                    authors = (listOf("ThinkingStudio, Sinytra") + (json.getAsJsonArray("authors")?.map { it.asString } ?: emptyList())).joinToString(separator = ", "),
+                    authors = (listOf("404", "ThinkingStudio, Sinytra") + (json.getAsJsonArray("authors")?.map { it.asString } ?: emptyList())).joinToString(separator = ", "),
                     description = json.get("description")?.asString +
                             "\\n\\nThis is based on Sinytra's Forgified Fabric API, " +
                             "but is updated to work on newer versions of Minecraft. " +
                             "You can replace this version with the original that can be obtained from here: " +
                             "https://modrinth.com/mod/forgified-fabric-api",
                     provides = providedMods,
-                    displayURL = "https://github.com/ThinkingStudios/ForgifiedFabricAPI"
+                    displayURL = "https://github.com/404Setup/ForgifiedFabricAPI"
                 )
             )
             val mixins = json.getAsJsonArray("mixins")?.map {
@@ -215,7 +215,7 @@ abstract class GenerateForgeModMetadata : DefaultTask() {
                 loaderVersion = "[${loaderVersionString.get()},)",
                 license = json.get("license")?.asString ?: "All Rights Reserved",
                 displayTest,
-                issueTrackerURL = "https://github.com/ThinkingStudios/ForgifiedFabricAPI/issues",
+                issueTrackerURL = "https://github.com/404Setup/ForgifiedFabricAPI/issues",
 
                 mods,
                 dependencies = mapOf(normalModid to allDependencies),

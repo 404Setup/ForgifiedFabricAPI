@@ -59,7 +59,7 @@ public class NeoServerPlayNetworking {
 
     public static void onClientReady(ServerPlayer player) {
         NeoServerPacketSender packetSender = new NeoServerPacketSender(player.connection.getConnection());
-        ServerPlayConnectionEvents.JOIN.invoker().onPlayReady(player.connection,packetSender, player.server);
+        ServerPlayConnectionEvents.JOIN.invoker().onPlayReady(player.connection,packetSender, player.getServer());
 
         MinecraftRegisterPayload registerPacket = new MinecraftRegisterPayload(NeoCommonNetworking.PLAY_REGISTRY.getGlobalReceivers(PacketFlow.SERVERBOUND));
         packetSender.sendPacket(registerPacket);
