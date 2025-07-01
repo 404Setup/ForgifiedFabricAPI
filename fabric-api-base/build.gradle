@@ -5,3 +5,11 @@ version = getSubprojectVersion(project)
 //	':fabric-lifecycle-events-v1',
 //	':fabric-screen-api-v1'
 //])
+
+jar {
+    manifest {
+        attributes(
+                'Automatic-Module-Name': 'net.fabric.api.base'
+        )
+    }
+}
