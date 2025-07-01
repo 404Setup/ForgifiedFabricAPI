@@ -57,10 +57,10 @@ public class NetworkRegistryMixin {
         return codec;
     }
 
-    @Inject(method = "handleModdedPayload(Lnet/minecraft/network/protocol/common/ClientCommonPacketListener;Lnet/minecraft/network/protocol/common/ClientboundCustomPayloadPacket;)V", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;)V", ordinal = 1), cancellable = true)
-    private static void preventDisconnectOnUnknownFabricPacketClient(ClientCommonPacketListener listener, ClientboundCustomPayloadPacket packet, CallbackInfo info) {
+    @Inject(method = "handleModdedPayload", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;warn(Ljava/lang/String;)V", ordinal = 0), cancellable = true)
+    private static void preventDisconnectOnUnknownFabricPacketClient(ServerCommonPacketListener listener, ServerboundCustomPayloadPacket packet, CallbackInfo ci) {
         if (NeoNetworkRegistrar.hasCodecFor(listener.protocol(), packet.type().flow(), packet.payload().type().id())) {
-            info.cancel();
+            ci.cancel();
         }
     }
 
