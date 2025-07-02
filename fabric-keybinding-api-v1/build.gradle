@@ -1,3 +1,11 @@
 version = getSubprojectVersion(project)
 
 moduleDependencies(project, ['fabric-api-base'])
+
+jar {
+    manifest {
+        attributes(
+                'Automatic-Module-Name': 'net.fabric.api.keybinding'
+        )
+    }
+}

@@ -5,3 +5,11 @@ moduleDependencies(project, ['fabric-api-base'])
 loom {
 	accessWidenerPath = file('src/main/resources/fabric-networking-api-v1.accesswidener')
 }
+
+jar {
+	manifest {
+		attributes(
+				'Automatic-Module-Name': 'net.fabric.api.networking'
+		)
+	}
+}
