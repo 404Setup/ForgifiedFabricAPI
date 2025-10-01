@@ -18,6 +18,7 @@ import org.apache.commons.lang3.function.TriConsumer;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -31,7 +32,7 @@ public class NeoNetworkRegistrar {
 
     private final ConnectionProtocol protocol;
 
-    private final Map<ResourceLocation, NeoPayloadHandler<?>> registeredPayloads = new HashMap<>();
+    private final Map<ResourceLocation, NeoPayloadHandler<?>> registeredPayloads = new ConcurrentHashMap<>();
 
     public NeoNetworkRegistrar(ConnectionProtocol protocol) {
         this.protocol = protocol;
@@ -64,9 +65,9 @@ public class NeoNetworkRegistrar {
 
     public Set<ResourceLocation> getGlobalReceivers(PacketFlow flow) {
         return registeredPayloads.entrySet().stream()
-            .filter(e -> e.getValue().hasGlobalHandler(flow))
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toSet());
+                .filter(e -> e.getValue().hasGlobalHandler(flow))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 
     public <PAYLOAD extends CustomPacketPayload, CONTEXT, HANDLER> boolean registerLocalReceiver(CustomPacketPayload.Type<PAYLOAD> type, ICommonPacketListener listener, HANDLER handler, Function<IPayloadContext, CONTEXT> ctxFactory, TriConsumer<HANDLER, PAYLOAD, CONTEXT> consumer) {
@@ -81,9 +82,9 @@ public class NeoNetworkRegistrar {
 
     public Set<ResourceLocation> getLocalReceivers(ICommonPacketListener listener) {
         return registeredPayloads.entrySet().stream()
-            .filter(e -> e.getValue().hasLocalHandler(listener))
-            .map(Map.Entry::getKey)
-            .collect(Collectors.toSet());
+                .filter(e -> e.getValue().hasLocalHandler(listener))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 
     public Set<ResourceLocation> getLocalSendable(ICommonPacketListener listener) {
@@ -162,5 +163,8 @@ public class NeoNetworkRegistrar {
         }
     }
 
-    record NeoSubHandler<PAYLOAD extends CustomPacketPayload, CONTEXT, HANDLER>(HANDLER handler, Function<IPayloadContext, CONTEXT> ctxFactory, TriConsumer<HANDLER, PAYLOAD, CONTEXT> consumer) { }
+    record NeoSubHandler<PAYLOAD extends CustomPacketPayload, CONTEXT, HANDLER>(HANDLER handler,
+                                                                                Function<IPayloadContext, CONTEXT> ctxFactory,
+                                                                                TriConsumer<HANDLER, PAYLOAD, CONTEXT> consumer) {
+    }
 }

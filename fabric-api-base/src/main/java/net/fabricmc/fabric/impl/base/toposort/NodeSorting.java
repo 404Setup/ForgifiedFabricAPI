@@ -103,7 +103,7 @@ public class NodeSorting {
 
 		// Order SCCs according to priorities. When there is a choice, use the SCC with the lowest id.
 		// The priority queue contains all SCCs that currently have 0 in-degree.
-		PriorityQueue<NodeScc<N>> pq = new PriorityQueue<>(Comparator.comparing(scc -> scc.nodes.get(0), comparator));
+		PriorityQueue<NodeScc<N>> pq = new PriorityQueue<>(Comparator.comparing(scc -> scc.nodes.getFirst(), comparator));
 		sortedNodes.clear();
 
 		for (NodeScc<N> scc : nodeToScc.values()) {

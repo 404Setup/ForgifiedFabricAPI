@@ -59,7 +59,7 @@ public class NeoServerPlayNetworking {
 
     public static void onClientReady(ServerPlayer player) {
         NeoServerPacketSender packetSender = new NeoServerPacketSender(player.connection.getConnection());
-        ServerPlayConnectionEvents.JOIN.invoker().onPlayReady(player.connection,packetSender, player.getServer());
+        ServerPlayConnectionEvents.JOIN.invoker().onPlayReady(player.connection,packetSender, player.level().getServer());
 
         MinecraftRegisterPayload registerPacket = new MinecraftRegisterPayload(NeoCommonNetworking.PLAY_REGISTRY.getGlobalReceivers(PacketFlow.SERVERBOUND));
         packetSender.sendPacket(registerPacket);
@@ -68,7 +68,7 @@ public class NeoServerPlayNetworking {
     private record ServerNeoContextWrapper(IPayloadContext context) implements ServerPlayNetworking.Context {
         @Override
         public MinecraftServer server() {
-            return player().getServer();
+            return player().level().getServer();
         }
 
         @Override

@@ -24,7 +24,7 @@ import net.minecraft.nbt.Tag;
  *
  * <p>For the current list of types, check with {@link Tag}.
  *
- * @see CompoundTag#contains(String, int)
+ * @see CompoundTag#getIntOr(String, int)
  * @see net.minecraft.nbt.TagTypes#getType(int)
  * @deprecated Use the constants in {@link Tag} instead.
  */
@@ -43,13 +43,6 @@ public final class NbtType {
 	public static final int COMPOUND = 10;
 	public static final int INT_ARRAY = 11;
 	public static final int LONG_ARRAY = 12;
-
-	/**
-	 * Any numeric value: byte, short, int, long, float, double.
-	 *
-	 * @see CompoundTag#getIntOr(String, int)
-	 */
-	public static final int NUMBER = 99;
 
 	private NbtType() { }
 }
